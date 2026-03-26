@@ -43,7 +43,8 @@ public class HandEvaluator {
         }
     }
 
-   static EvaluatedHand evaluate(List<Card> five) {
+static EvaluatedHand evaluate(List<Card> five) {
+    if (isTwoPair(five)) return twoPair(five);
     if (isOnePair(five)) return onePair(five);
     return highCard(five);
 }
@@ -97,5 +98,47 @@ private static EvaluatedHand onePair(List<Card> five) {
     kickers.forEach(c -> tb.add(c.rank().value));
 
     return new EvaluatedHand(HandRank.ONE_PAIR, ordered, tb);
+}
+
+private static boolean isTwoPair(List<Card> five) {
+    return five.stream()
+        .collect(java.util.stream.Collectors.groupingBy(Card::rank, java.util.stream.Collectors.counting()))
+        .values()
+        .stream()
+        .filter(count -> count == 2)
+        .count() == 2;
+}
+
+private static EvaluatedHand twoPair(List<Card> five) {
+
+    var counts = five.stream()
+        .collect(java.util.stream.Collectors.groupingBy(Card::rank, java.util.stream.Collectors.counting()));
+
+    List<Rank> pairs = counts.entrySet().stream()
+        .filter(e -> e.getValue() == 2)
+        .map(e -> e.getKey())
+        .sorted((a, b) -> b.value - a.value)
+        .toList();
+
+    Rank highPair = pairs.get(0);
+    Rank lowPair = pairs.get(1);
+
+    Rank kicker = counts.entrySet().stream()
+        .filter(e -> e.getValue() == 1)
+        .map(e -> e.getKey())
+        .findFirst()
+        .get();
+
+    List<Card> ordered = new ArrayList<>();
+
+    five.stream().filter(c -> c.rank() == highPair).forEach(ordered::add);
+    five.stream().filter(c -> c.rank() == lowPair).forEach(ordered::add);
+    five.stream().filter(c -> c.rank() == kicker).forEach(ordered::add);
+
+    return new EvaluatedHand(
+        HandRank.TWO_PAIR,
+        ordered,
+        List.of(highPair.value, lowPair.value, kicker.value)
+    );
 }
 }
