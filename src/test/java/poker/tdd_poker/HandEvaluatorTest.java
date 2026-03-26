@@ -176,6 +176,43 @@ void comparePlayers_shouldReturnWinner() {
 
     assertEquals(List.of(0), result.winners());
 }
-   
+   @Test
+void shouldHandleTie() {
+    List<List<Card>> players = List.of(
+        List.of(new Card(Rank.ACE, Suit.SPADES), new Card(Rank.KING, Suit.HEARTS)),
+        List.of(new Card(Rank.QUEEN, Suit.SPADES), new Card(Rank.JACK, Suit.HEARTS))
+    );
+
+    List<Card> board = List.of(
+        new Card(Rank.FIVE, Suit.CLUBS),
+        new Card(Rank.SIX, Suit.DIAMONDS),
+        new Card(Rank.SEVEN, Suit.HEARTS),
+        new Card(Rank.EIGHT, Suit.SPADES),
+        new Card(Rank.NINE, Suit.DIAMONDS)
+    );
+
+    GameResults result = HandEvaluator.compare(players, board);
+
+    assertTrue(result.isSplit());
+}
+@Test
+void boardPlays() {
+    List<List<Card>> players = List.of(
+        List.of(new Card(Rank.ACE, Suit.SPADES), new Card(Rank.ACE, Suit.HEARTS)),
+        List.of(new Card(Rank.KING, Suit.SPADES), new Card(Rank.QUEEN, Suit.HEARTS))
+    );
+
+    List<Card> board = List.of(
+        new Card(Rank.FIVE, Suit.CLUBS),
+        new Card(Rank.SIX, Suit.DIAMONDS),
+        new Card(Rank.SEVEN, Suit.HEARTS),
+        new Card(Rank.EIGHT, Suit.SPADES),
+        new Card(Rank.NINE, Suit.DIAMONDS)
+    );
+
+    GameResults result = HandEvaluator.compare(players, board);
+
+    assertTrue(result.isSplit());
+}
     
 }
