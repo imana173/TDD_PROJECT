@@ -122,6 +122,60 @@ void detectsFullHouse() {
     EvaluatedHand result = HandEvaluator.bestHand(hole, board);
     assertEquals(HandRank.FULL_HOUSE, result.handRank());
 }
+
+@Test
+void detectsFourOfAKind() {
+    List<Card> hole = List.of(
+        new Card(Rank.ACE, Suit.SPADES),
+        new Card(Rank.ACE, Suit.HEARTS)
+    );
+    List<Card> board = List.of(
+        new Card(Rank.ACE, Suit.CLUBS),
+        new Card(Rank.ACE, Suit.DIAMONDS),
+        new Card(Rank.KING, Suit.HEARTS),
+        new Card(Rank.TWO, Suit.CLUBS),
+        new Card(Rank.THREE, Suit.DIAMONDS)
+    );
+    EvaluatedHand result = HandEvaluator.bestHand(hole, board);
+    assertEquals(HandRank.FOUR_OF_A_KIND, result.handRank());
+}
+
+@Test
+void detectsStraightFlush() {
+    List<Card> hole = List.of(
+        new Card(Rank.TEN, Suit.HEARTS),
+        new Card(Rank.NINE, Suit.HEARTS)
+    );
+    List<Card> board = List.of(
+        new Card(Rank.EIGHT, Suit.HEARTS),
+        new Card(Rank.SEVEN, Suit.HEARTS),
+        new Card(Rank.SIX, Suit.HEARTS),
+        new Card(Rank.TWO, Suit.CLUBS),
+        new Card(Rank.THREE, Suit.DIAMONDS)
+    );
+    EvaluatedHand result = HandEvaluator.bestHand(hole, board);
+    assertEquals(HandRank.STRAIGHT_FLUSH, result.handRank());
+}
+
+@Test
+void comparePlayers_shouldReturnWinner() {
+    List<List<Card>> players = List.of(
+        List.of(new Card(Rank.ACE, Suit.SPADES), new Card(Rank.ACE, Suit.HEARTS)),
+        List.of(new Card(Rank.KING, Suit.SPADES), new Card(Rank.KING, Suit.HEARTS))
+    );
+
+    List<Card> board = List.of(
+        new Card(Rank.TWO, Suit.CLUBS),
+        new Card(Rank.THREE, Suit.DIAMONDS),
+        new Card(Rank.FOUR, Suit.HEARTS),
+        new Card(Rank.FIVE, Suit.CLUBS),
+        new Card(Rank.NINE, Suit.DIAMONDS)
+    );
+
+    GameResults result = HandEvaluator.compare(players, board);
+
+    assertEquals(List.of(0), result.winners());
+}
    
     
 }
