@@ -1,5 +1,10 @@
 package poker.tdd_poker;
 
-public class Card {
-    
+
+
+public record Card(Rank rank, Suit suit) {
+    @Override
+    public String toString() {
+        return rank + "_" + suit;
+    }
 }
