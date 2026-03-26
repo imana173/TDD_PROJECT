@@ -88,6 +88,23 @@ void detectsStraight() {
     EvaluatedHand result = HandEvaluator.bestHand(hole, board);
     assertEquals(HandRank.STRAIGHT, result.handRank());
 }
+
+@Test
+void detectsFlush() {
+    List<Card> hole = List.of(
+        new Card(Rank.SIX, Suit.HEARTS),
+        new Card(Rank.KING, Suit.DIAMONDS)
+    );
+    List<Card> board = List.of(
+        new Card(Rank.ACE, Suit.HEARTS),
+        new Card(Rank.JACK, Suit.HEARTS),
+        new Card(Rank.NINE, Suit.HEARTS),
+        new Card(Rank.FOUR, Suit.HEARTS),
+        new Card(Rank.TWO, Suit.CLUBS)
+    );
+    EvaluatedHand result = HandEvaluator.bestHand(hole, board);
+    assertEquals(HandRank.FLUSH, result.handRank());
+}
    
     
 }
