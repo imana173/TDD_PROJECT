@@ -55,6 +55,22 @@ void detectsTwoPair() {
     assertEquals(HandRank.TWO_PAIR, result.handRank());
     assertEquals(5, result.chosen5().size());
 }
+@Test
+void detectsThreeOfAKind() {
+    List<Card> hole = List.of(
+        new Card(Rank.ACE, Suit.SPADES),
+        new Card(Rank.ACE, Suit.HEARTS)
+    );
+    List<Card> board = List.of(
+        new Card(Rank.ACE, Suit.CLUBS),
+        new Card(Rank.KING, Suit.DIAMONDS),
+        new Card(Rank.NINE, Suit.HEARTS),
+        new Card(Rank.JACK, Suit.CLUBS),
+        new Card(Rank.THREE, Suit.DIAMONDS)
+    );
+    EvaluatedHand result = HandEvaluator.bestHand(hole, board);
+    assertEquals(HandRank.THREE_OF_A_KIND, result.handRank());
+}
    
     
 }
