@@ -105,6 +105,23 @@ void detectsFlush() {
     EvaluatedHand result = HandEvaluator.bestHand(hole, board);
     assertEquals(HandRank.FLUSH, result.handRank());
 }
+
+@Test
+void detectsFullHouse() {
+    List<Card> hole = List.of(
+        new Card(Rank.ACE, Suit.SPADES),
+        new Card(Rank.ACE, Suit.HEARTS)
+    );
+    List<Card> board = List.of(
+        new Card(Rank.ACE, Suit.CLUBS),
+        new Card(Rank.KING, Suit.DIAMONDS),
+        new Card(Rank.KING, Suit.HEARTS),
+        new Card(Rank.TWO, Suit.CLUBS),
+        new Card(Rank.THREE, Suit.DIAMONDS)
+    );
+    EvaluatedHand result = HandEvaluator.bestHand(hole, board);
+    assertEquals(HandRank.FULL_HOUSE, result.handRank());
+}
    
     
 }
