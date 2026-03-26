@@ -71,6 +71,23 @@ void detectsThreeOfAKind() {
     EvaluatedHand result = HandEvaluator.bestHand(hole, board);
     assertEquals(HandRank.THREE_OF_A_KIND, result.handRank());
 }
+
+@Test
+void detectsStraight() {
+    List<Card> hole = List.of(
+        new Card(Rank.TEN, Suit.SPADES),
+        new Card(Rank.NINE, Suit.HEARTS)
+    );
+    List<Card> board = List.of(
+        new Card(Rank.EIGHT, Suit.CLUBS),
+        new Card(Rank.SEVEN, Suit.DIAMONDS),
+        new Card(Rank.SIX, Suit.HEARTS),
+        new Card(Rank.TWO, Suit.CLUBS),
+        new Card(Rank.THREE, Suit.DIAMONDS)
+    );
+    EvaluatedHand result = HandEvaluator.bestHand(hole, board);
+    assertEquals(HandRank.STRAIGHT, result.handRank());
+}
    
     
 }
