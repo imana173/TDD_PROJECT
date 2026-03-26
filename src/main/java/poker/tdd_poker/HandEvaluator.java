@@ -44,6 +44,7 @@ public class HandEvaluator {
     }
 
 static EvaluatedHand evaluate(List<Card> five) {
+if (isStraight(five)) return straight(five);
 if (isThreeOfAKind(five)) return threeOfAKind(five);
 if (isTwoPair(five)) return twoPair(five);
 if (isOnePair(five)) return onePair(five);
@@ -177,5 +178,65 @@ private static EvaluatedHand threeOfAKind(List<Card> five) {
     kickers.forEach(c -> tb.add(c.rank().value));
 
     return new EvaluatedHand(HandRank.THREE_OF_A_KIND, ordered, tb);
+}
+
+private static boolean isStraight(List<Card> five) {
+    return getStraightHigh(five) != -1;
+}
+
+private static int getStraightHigh(List<Card> five) {
+
+    List<Integer> values = five.stream()
+        .map(c -> c.rank().value)
+        .distinct()
+        .sorted((a, b) -> b - a)
+        .toList();
+
+    if (values.size() < 5) return -1;
+
+    // straight normal
+    if (values.get(0) - values.get(4) == 4) {
+        return values.get(0);
+    }
+
+    // wheel (A-2-3-4-5)
+    if (values.equals(List.of(14, 5, 4, 3, 2))) {
+        return 5;
+    }
+
+    return -1;
+}
+
+private static EvaluatedHand straight(List<Card> five) {
+
+    int high = getStraightHigh(five);
+
+    List<Card> ordered;
+
+    // wheel
+    if (high == 5) {
+        ordered = new ArrayList<>();
+        for (int v : List.of(5, 4, 3, 2)) {
+            int finalV = v;
+            five.stream()
+                .filter(c -> c.rank().value == finalV)
+                .findFirst()
+                .ifPresent(ordered::add);
+        }
+        five.stream()
+            .filter(c -> c.rank() == Rank.ACE)
+            .findFirst()
+            .ifPresent(ordered::add);
+    } else {
+        ordered = five.stream()
+            .sorted((a, b) -> b.rank().value - a.rank().value)
+            .toList();
+    }
+
+    return new EvaluatedHand(
+        HandRank.STRAIGHT,
+        ordered,
+        List.of(high)
+    );
 }
 }
