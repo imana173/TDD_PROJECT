@@ -44,6 +44,8 @@ public class HandEvaluator {
     }
 
 static EvaluatedHand evaluate(List<Card> five) {
+if (isFlush(five)) return flush(five);
+if (isStraight(five)) return straight(five);
 if (isStraight(five)) return straight(five);
 if (isThreeOfAKind(five)) return threeOfAKind(five);
 if (isTwoPair(five)) return twoPair(five);
@@ -237,6 +239,30 @@ private static EvaluatedHand straight(List<Card> five) {
         HandRank.STRAIGHT,
         ordered,
         List.of(high)
+    );
+}
+
+private static boolean isFlush(List<Card> five) {
+    return five.stream()
+        .map(Card::suit)
+        .distinct()
+        .count() == 1;
+}
+
+private static EvaluatedHand flush(List<Card> five) {
+
+    List<Card> sorted = five.stream()
+        .sorted((a, b) -> b.rank().value - a.rank().value)
+        .toList();
+
+    List<Integer> tb = sorted.stream()
+        .map(c -> c.rank().value)
+        .toList();
+
+    return new EvaluatedHand(
+        HandRank.FLUSH,
+        sorted,
+        tb
     );
 }
 }
