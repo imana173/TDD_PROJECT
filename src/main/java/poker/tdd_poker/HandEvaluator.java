@@ -44,9 +44,10 @@ public class HandEvaluator {
     }
 
 static EvaluatedHand evaluate(List<Card> five) {
-    if (isTwoPair(five)) return twoPair(five);
-    if (isOnePair(five)) return onePair(five);
-    return highCard(five);
+if (isThreeOfAKind(five)) return threeOfAKind(five);
+if (isTwoPair(five)) return twoPair(five);
+if (isOnePair(five)) return onePair(five);
+return highCard(five);
 }
 
     private static EvaluatedHand highCard(List<Card> five) {
@@ -140,5 +141,41 @@ private static EvaluatedHand twoPair(List<Card> five) {
         ordered,
         List.of(highPair.value, lowPair.value, kicker.value)
     );
+}
+
+private static boolean isThreeOfAKind(List<Card> five) {
+    return five.stream()
+        .collect(java.util.stream.Collectors.groupingBy(Card::rank, java.util.stream.Collectors.counting()))
+        .values()
+        .stream()
+        .anyMatch(count -> count == 3);
+}
+
+private static EvaluatedHand threeOfAKind(List<Card> five) {
+
+    var counts = five.stream()
+        .collect(java.util.stream.Collectors.groupingBy(Card::rank, java.util.stream.Collectors.counting()));
+
+    Rank triplet = counts.entrySet().stream()
+        .filter(e -> e.getValue() == 3)
+        .map(e -> e.getKey())
+        .findFirst()
+        .get();
+
+    List<Card> kickers = five.stream()
+        .filter(c -> c.rank() != triplet)
+        .sorted((a, b) -> b.rank().value - a.rank().value)
+        .toList();
+
+    List<Card> ordered = new ArrayList<>();
+
+    five.stream().filter(c -> c.rank() == triplet).forEach(ordered::add);
+    ordered.addAll(kickers);
+
+    List<Integer> tb = new ArrayList<>();
+    tb.add(triplet.value);
+    kickers.forEach(c -> tb.add(c.rank().value));
+
+    return new EvaluatedHand(HandRank.THREE_OF_A_KIND, ordered, tb);
 }
 }
