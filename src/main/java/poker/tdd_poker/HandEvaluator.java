@@ -44,6 +44,9 @@ public class HandEvaluator {
     }
 
 static EvaluatedHand evaluate(List<Card> five) {
+if (isFullHouse(five)) return fullHouse(five);
+if (isFlush(five)) return flush(five);
+if (isStraight(five)) return straight(five);
 if (isFlush(five)) return flush(five);
 if (isStraight(five)) return straight(five);
 if (isStraight(five)) return straight(five);
@@ -263,6 +266,42 @@ private static EvaluatedHand flush(List<Card> five) {
         HandRank.FLUSH,
         sorted,
         tb
+    );
+}
+
+private static boolean isFullHouse(List<Card> five) {
+    var counts = five.stream()
+        .collect(java.util.stream.Collectors.groupingBy(Card::rank, java.util.stream.Collectors.counting()));
+
+    return counts.containsValue(3L) && counts.containsValue(2L);
+}
+
+private static EvaluatedHand fullHouse(List<Card> five) {
+
+    var counts = five.stream()
+        .collect(java.util.stream.Collectors.groupingBy(Card::rank, java.util.stream.Collectors.counting()));
+
+    Rank triplet = counts.entrySet().stream()
+        .filter(e -> e.getValue() == 3)
+        .map(e -> e.getKey())
+        .findFirst()
+        .get();
+
+    Rank pair = counts.entrySet().stream()
+        .filter(e -> e.getValue() == 2)
+        .map(e -> e.getKey())
+        .findFirst()
+        .get();
+
+    List<Card> ordered = new ArrayList<>();
+
+    five.stream().filter(c -> c.rank() == triplet).forEach(ordered::add);
+    five.stream().filter(c -> c.rank() == pair).forEach(ordered::add);
+
+    return new EvaluatedHand(
+        HandRank.FULL_HOUSE,
+        ordered,
+        List.of(triplet.value, pair.value)
     );
 }
 }
