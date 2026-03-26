@@ -193,7 +193,7 @@ public class HandEvaluator {
         return new EvaluatedHand(HandRank.THREE_OF_A_KIND, ordered, tb);
     }
 
-    // MODIFIÉ : gère le wheel
+   
     private static EvaluatedHand straight(List<Card> five) {
         int high = getStraightHigh(five);
         List<Card> ordered = orderStraight(five, high);
@@ -232,14 +232,14 @@ public class HandEvaluator {
         return new EvaluatedHand(HandRank.FOUR_OF_A_KIND, ordered, List.of(quad.value, kicker.value));
     }
 
-    // MODIFIÉ : gère le wheel
+    
     private static EvaluatedHand straightFlush(List<Card> five) {
         int high = getStraightHigh(five);
         List<Card> ordered = orderStraight(five, high);
         return new EvaluatedHand(HandRank.STRAIGHT_FLUSH, ordered, List.of(high));
     }
 
-    // AJOUTÉ : ordonne le straight correctement (wheel = 5,4,3,2,A)
+    // ordonne le straight correctement (wheel = 5,4,3,2,A)
     private static List<Card> orderStraight(List<Card> five, int high) {
         if (high == 5) {
             List<Card> ordered = new ArrayList<>();
